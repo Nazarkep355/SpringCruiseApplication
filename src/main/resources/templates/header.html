@@ -1,0 +1,23 @@
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+<div th:fragment="header" >
+    <div class="container"> <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a th:text='#{label.home}' href="/home" class="nav-link active" aria-current="page"></a></li>
+            <li class="nav-item"><a th:text='#{label.cruises}' href="/cruises/all?page=1" class="nav-link"></a></li>
+            <li th:if='${#session!=null&&#session.getAttribute("user")!=null}' class="nav-item">
+                <a  href="/tickets/all?page=1" th:text='#{label.tickets}' class="nav-link"></a></li>
+        </ul>
+        <span class="fs-4" th:if='${#session!=null&&#session.getAttribute("user")!=null}' th:text='${#session.getAttribute("user").name}' style="position: absolute;right: 15px"></span>
+        <p th:if='${#session!=null&&#session.getAttribute("user")!=null}'>
+            <small  th:text='${#session.getAttribute("user").money}'
+                    style="margin-top:40px;position: absolute;right: 15px">
+            </small></p>
+        <form th:if='${#session!=null&&#session.getAttribute("user")!=null}' th:action="@{/logout}" method="post">
+            <button  class="nav-link active"  th:text="#{label.signOut}"  type="submit" />
+        </form>
+    </header>
+    </div>
+    <hr>
+</div>
