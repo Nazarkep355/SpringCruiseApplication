@@ -5,9 +5,7 @@ import com.example.SpringCruiseApplication.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -22,6 +20,12 @@ public class ShipsController {
     @GetMapping("/all")
     public String page(Model model, Optional<Integer> page) {
         List<Ship> ships = shipService.findAllPageable(page.orElse(1));
+        Integer allSize = shipService.count();
+        boolean max = !(allSize > (page.orElse(1) * 5));
+
+
+        model.addAttribute("max", max);
+        model.addAttribute("page", page.orElse(1));
         model.addAttribute("ships", ships);
         return "ships.html";
     }
@@ -29,9 +33,7 @@ public class ShipsController {
     @GetMapping("/add")
     public String addPage(Model model, HttpSession session) {
         Optional<Object> error = Optional.ofNullable(session.getAttribute("error"));
-        if (error.isPresent()) {
-            model.addAttribute("error", error.get());
-        }
+        error.ifPresent(o -> model.addAttribute("error", o));
         session.setAttribute("error", null);
         return "ship_add.html";
     }
@@ -59,4 +61,5 @@ public class ShipsController {
         }
         return "redirect:/ships/all";
     }
+
 }

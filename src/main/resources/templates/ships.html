@@ -11,7 +11,15 @@
 <header th:insert="header.html :: header"></header>
 <a style="margin-top: 25px" th:if='${#session!=null&&#session.getAttribute("user")!=null&&#session.getAttribute("user").isAdmin()}'
    type="button" th:text="#{label.addShip}"
-   th:href="'/ships/add'  " class="btn btn-primary"></a>
+   th:href="'/ships/add'" class="btn btn-primary"></a>
+<nav style="margin-left: 47%" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li th:if="${page>2}" class="page-item"><a class="page-link"  th:text="#{label.goToFirstPage}" href="/ships/all"></a></li>
+        <li th:if="${page>1}" class="page-item"><a class="page-link"  th:text="${page-1}" th:href="'/ships/all?page='+${page-1}"></a></li>
+        <li class="page-item"><a class="page-link" th:text="${page}" th:href="'/ships/all?page='+${page}"></a></li>
+        <li th:if="${!max}" class="page-item"><a class="page-link" th:text="${page+1}" th:href="'/ships/all?page='+${page+1}"></a></li>
+    </ul>
+</nav>
 <table style="margin-top: 50px" class="table table-striped">
     <thead>
     <tr>

@@ -18,13 +18,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column
-    @Email
+    @Email(message = "error.emailMust")
     private String email;
     @Column
-    @Pattern(regexp = "[(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)]{8,20}")
+    @Pattern(regexp = "[(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)]{8,20}",message = "error.mustContain")
     private String password;
     @Column
-    @NotBlank
+    @NotBlank(message = "error.enterWrongFormat")
     private String name;
     @Column
     private String role;

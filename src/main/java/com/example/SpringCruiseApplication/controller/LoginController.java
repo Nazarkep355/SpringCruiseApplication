@@ -31,7 +31,6 @@ public class LoginController {
     @GetMapping("/home")
     public String homePage(@SessionAttribute Optional<User> user) {
         if (user.isPresent()) {
-            System.out.println(user.get().getName());
             return "home.html";
         } else {
             return "redirect:/login";
@@ -39,7 +38,7 @@ public class LoginController {
     }
 
     @PostMapping("/loginSuccess")
-    public String loginSuccess(String username, String password, HttpSession session) {
+    public String loginSuccess(String username, HttpSession session) {
         User user = userService.getUserByEmail(username);
         session.setAttribute("user", user);
         return "redirect:/home";

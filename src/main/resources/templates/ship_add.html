@@ -13,37 +13,37 @@
     <!--            <small class="text-muted" th:if="${registered}" th:text="${Youjustreged}"></small>-->
     <form th:action="@{/ships/add}" th:method="post" class="p-4 p-md-5 border rounded-3 bg-light">
         <div class="form-floating mb-3">
-            <input type="text" name="name" class="form-control"
+            <input required="required" type="text" name="name" class="form-control"
                    id="nameInput" placeholder="name">
             <label th:text="#{label.name}" for="nameInput"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="eCost" class="form-control"
+            <input required="required" type="number" name="eCost" class="form-control"
                    id="ecost" placeholder="name">
             <label th:text="#{label.cost}+' Econom'" for="ecost"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="eSeats" class="form-control"
+            <input required="required" type="number" name="eSeats" class="form-control"
                    id="eseats" placeholder="name">
             <label th:text="'Econom '+#{label.seats}" for="eseats"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="mCost" class="form-control"
+            <input required="required" type="number" name="mCost" class="form-control"
                    id="mcost" placeholder="name">
             <label th:text="#{label.cost}+' Middle'" for="mcost"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="mSeats" class="form-control"
+            <input required="required" type="number" name="mSeats" class="form-control"
                    id="mseats" placeholder="name">
             <label th:text="'Middle '+#{label.seats}" for="mseats"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="pCost" class="form-control"
+            <input required="required" type="number" name="pCost" class="form-control"
                    id="pcost" placeholder="name">
             <label th:text="#{label.cost}+' Premium'" for="pcost"></label>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" name="pSeats" class="form-control"
+            <input required="required" type="number" name="pSeats" class="form-control"
                    id="pseats" placeholder="name">
             <label th:text="'Premium '+#{label.seats}" for="pseats"></label>
         </div>
