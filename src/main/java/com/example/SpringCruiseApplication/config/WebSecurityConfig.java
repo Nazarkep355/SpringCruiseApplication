@@ -38,13 +38,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         security
                 .authorizeRequests()
                 .antMatchers("/home", "/user/**",
-                        "tickets/**","ships/all","/ports/all"
-                ,"ports/count")
+                        "tickets/**","/ships/all","/ports/all","cruises/all"
+                )
                 .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/ships/add", "/ports/add",
-                        "/trains/plan", "/trains/cancel", "/stations/addPage", "/stations/add")
+                        "/staff/**","routes/**","/cruises/add")
                 .hasRole("ADMIN")
-                .antMatchers("/register", "/stations", "/rest/**")
+                .antMatchers("/register", "/rest/**")
                 .permitAll()
                 .and()
                 .formLogin()

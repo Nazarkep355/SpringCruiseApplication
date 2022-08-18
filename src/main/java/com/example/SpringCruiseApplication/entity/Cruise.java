@@ -2,6 +2,8 @@ package com.example.SpringCruiseApplication.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLUpdate;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,16 +19,15 @@ public class Cruise {
     private Long id;
     @Column
     @ElementCollection
+    @OrderColumn
     private List<Date> dates;
-    @OneToMany
-    private List<Port> ports;
     @ManyToOne
     @JoinColumn(name = "route")
     private Route route;
     @ManyToOne
     @JoinColumn(name = "ship")
     private Ship ship;
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     private List<Staff> staff;
     @Column
     private int economTickets;
@@ -54,6 +55,7 @@ public class Cruise {
             return ship.getPremiumTotalPlaces()-premiumTickets;
         else return ship.getEconomTotalPlaces()-economTickets;
     }
+
 
 
 }

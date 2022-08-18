@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{label.cruises}"></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="header.html :: header"></header>
+<a style="margin-top: 25px" th:if='${#session!=null&&#session.getAttribute("user")!=null&&#session.getAttribute("user").isAdmin()}'
+   type="button" th:text="#{label.planCruise}"
+   th:href="'/cruises/add'" class="btn btn-primary"></a>
+<form action="/cruises/all" method="get" class="row gx-3 gy-2 align-items-center mx-auto">
+    <input type="hidden" name="page" value="1">
+    <div class="col-sm-3">
+        <label class="visually-hidden" for="City">Name</label>
+        <input type="text" name="city" class="form-control"  id="City"
+               th:placeholder="#{label.city}">
+    </div>
+    <div>
+        <input type="checkbox" name="freeOnly" class="form-check-input mt-0" id="freeOnly">
+        <label for="freeOnly" th:text="#{label.onlyFreePlaces}"></label>
+    </div>
+    <div>
+        <input type="checkbox" name="actual" class="form-check-input mt-0" id="actualOnly">
+        <label for="actualOnly" th:text="#{label.actualOnly}"></label>
+    </div>
+    <div class="col-sm-3">
+        <button th:text="#{label.find}" type="submit" class="btn btn-primary"
+        ></button>
+    </div>
+</form>
+<nav style="margin-left: 47%" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li th:if="${page>2}" class="page-item"><a class="page-link"  th:text="#{label.goToFirstPage}"
+          th:href="'/cruises/all?page=1&actual='+${actual}+'&freeOnly='+${freeOnly}"></a></li>
+        <li th:if="${page>1}" class="page-item"><a class="page-link"  th:text="${page-1}"
+          th:href="'/cruises/all?page='+${page-1}+'&actual='+${actual}+'&freeOnly='+${freeOnly}"></a></li>
+        <li class="page-item"><a class="page-link" th:text="${page}"
+          th:href="'/cruises/all?page='+${page}+'+&actual='+${actual}+'&freeOnly='+${freeOnly}"></a></li>
+        <li th:if="${!max}" class="page-item"><a class="page-link" th:text="${page+1}"
+          th:href="'/cruises/all?page='+${page+1}+'&actual='+${actual}+'&freeOnly='+${freeOnly}"></a></li>
+    </ul>
+</nav>
+<table style="margin-top: 50px" class="table table-striped">
+    <thead>
+    <tr>
+        <td scope="col" th:text="#{label.fromTo}">
+        </td>
+        <td scope="col" th:text="#{label.departureDate}">
+        </td>
+        <td scope="col" th:text="#{label.daysInJourney}">
+        </td>
+        <td scope="col" th:text="'Econom'+#{label.cost}">
+        </td>
+        <td scope="col" th:text="'Middle'+#{label.cost}">
+        </td>
+        <td scope="col" th:text="'Premium'+#{label.cost}">
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <div th:each="cruise : ${cruises}">
+        <tr>
+            <td th:text="${cruise.getRoute().firstLast()}">
+            </td>
+            <td th:text='${cruise.dates.get(0)}'>
+            </td>
+            <td th:text='${cruise.route.delaysSum()}'>
+            </td>
+            <td th:text='${cruise.ship.economCost}'>
+            </td>
+            <td th:text='${cruise.ship.middleCost}'>
+            </td>
+            <td th:text='${cruise.ship.premiumCost}'>
+            </td>
+        </tr>
+    </div>
+    </tbody>
+</table>
+<footer  th:insert="footer.html :: footer"></footer>
+</body>
+</html>

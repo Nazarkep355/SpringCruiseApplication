@@ -2,6 +2,7 @@ package com.example.SpringCruiseApplication.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "staff")
 @Getter
 @Setter
+@ToString
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,4 +19,6 @@ public class Staff {
     private String name;
     @Column
     private String Position;
+    @Column
+    private boolean enable;
 }

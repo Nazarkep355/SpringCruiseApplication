@@ -42,8 +42,10 @@ public class PortController {
         return "redirect:/ports/all";
     }
     @GetMapping("/add")
-    public String addPage(Model model, @SessionAttribute Optional<String> error){
+    public String addPage(Model model, HttpSession session){
+        Optional<Object> error = Optional.ofNullable(session.getAttribute("error"));
         error.ifPresent(s -> model.addAttribute("error", s));
+        session.setAttribute("error",null);
     return "port_add.html";
     }
 }

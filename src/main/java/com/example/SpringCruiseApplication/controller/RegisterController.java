@@ -2,28 +2,21 @@ package com.example.SpringCruiseApplication.controller;
 
 import com.example.SpringCruiseApplication.entity.User;
 import com.example.SpringCruiseApplication.service.UserService;
-import com.example.SpringCruiseApplication.util.MyExceptionHandler;
+import com.example.SpringCruiseApplication.util.ValidExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.net.ssl.HandshakeCompletedEvent;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
@@ -50,7 +43,7 @@ public class RegisterController {
         try {
             user = userService.registerUser(user);
         }catch (ConstraintViolationException e){
-                session.setAttribute("error", MyExceptionHandler.parseConsValidException(e));
+                session.setAttribute("error", ValidExceptionHandler.parseConsValidException(e));
             return "redirect:/register";
         }catch (IllegalArgumentException e){
             session.setAttribute("error",List.of(e.getMessage()));

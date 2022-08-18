@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "routes")
@@ -17,7 +18,18 @@ public class Route {
     @ElementCollection
     private List<Integer> delays;
     @Column
-    @OneToMany
+    @ManyToMany
+    @OrderColumn
     private List<Port> ports;
-
+    public String portsString(){
+        return ports.stream().map(Port::getCity)
+                .collect(Collectors.joining("_"));
+    }
+    public Integer delaysSum(){
+        return delays.stream().map(a->a+1).mapToInt(a->a).sum();
+    }
+    public String firstLast(){
+        List<String> cities = ports.stream().map(Port::getCity).toList();
+        return cities.get(0)+" - "+cities.get(cities.size()-1);
+    }
 }
