@@ -11,7 +11,7 @@
 <header th:insert="header.html :: header"></header>
 <a style="margin-top: 25px" th:if='${#session!=null&&#session.getAttribute("user")!=null&&#session.getAttribute("user").isAdmin()}'
    type="button" th:text="#{label.planCruise}"
-   th:href="'/cruises/add'" class="btn btn-primary"></a>
+   th:href="'/cruises/admin/add'" class="btn btn-primary"></a>
 <form action="/cruises/all" method="get" class="row gx-3 gy-2 align-items-center mx-auto">
     <input type="hidden" name="page" value="1">
     <div class="col-sm-3">
@@ -59,6 +59,8 @@
         </td>
         <td scope="col" th:text="'Premium'+#{label.cost}">
         </td>
+        <td scope="col" th:text="#{label.moreInfo}">
+        </td>
     </tr>
     </thead>
     <tbody>
@@ -75,6 +77,8 @@
             <td th:text='${cruise.ship.middleCost}'>
             </td>
             <td th:text='${cruise.ship.premiumCost}'>
+            </td>
+            <td><i><a th:href="'/cruises/'+${cruise.id}" th:text="#{label.moreInfo}"></a></i>
             </td>
         </tr>
     </div>

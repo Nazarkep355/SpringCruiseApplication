@@ -10,7 +10,7 @@
 <body>
 <header th:insert="header.html :: header"></header>
 <div style="min-height: 700px" class="col-md-10 mx-auto col-lg-5">
-    <form th:action="@{/cruises/add}" th:method="post" class="p-4 p-md-5 border rounded-3 bg-light">
+    <form th:action="@{/cruises/admin/add}" th:method="post" class="p-4 p-md-5 border rounded-3 bg-light">
         <div class="form-floating mb-3">
             <select name="ship" class="form-control" required="required">
                 <option value="" th:text="#{label.ship}"/>
@@ -33,7 +33,7 @@
             <input type="datetime-local" class="form-control" required="required" name="date"/>
         </div>
         <div class="form-floating mb-3">
-            <input class="form-control" name="number" onchange="resetField()"
+            <input required="required" class="form-control" name="number" onchange="resetField()"
                    type="number" id="numberInput"/>
             <label th:text="#{label.enterCapacity}+' '+#{label.staff}"/>
         </div>

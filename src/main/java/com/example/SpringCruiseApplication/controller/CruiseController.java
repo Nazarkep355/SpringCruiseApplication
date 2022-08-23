@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,17 @@ public class CruiseController {
     @Autowired
     private CruiseService cruiseService;
 
+    @GetMapping("/{id}")
+    public String findOne(@PathVariable("id") long id, Model model, HttpSession session){
+        Object error = session.getAttribute("error");
+        if(error!=null){
+            model.addAttribute("error",error);
+            session.setAttribute("error",null);
+        }
+        Cruise cruise = cruiseService.findById(id);
+        model.addAttribute("cruise",cruise);
+        return "cruise.html";
+    }
     @GetMapping("/all")
     public String cruisesPage(Model model, Optional<Integer> page,
                               Optional<Boolean> actual, Optional<String> city,
@@ -29,6 +41,8 @@ public class CruiseController {
         Integer count = cruiseService.findCount(page.orElse(1), city,
                 actual.orElse(false), freeOnly.orElse(false));
         boolean max = !(count>(page.orElse(1)*5));
+
+
         model.addAttribute("max",max);
         model.addAttribute("cruises", cruises);
         model.addAttribute("page", page.orElse(1));
@@ -37,7 +51,7 @@ public class CruiseController {
         return "cruises.html";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin/add")
     public String addPage(Model model) {
         List<Ship> ships = cruiseService.findShips();
         List<Route> routes = cruiseService.findRoutes();
@@ -50,7 +64,7 @@ public class CruiseController {
         return "cruises_add.html";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public String addCruise(String date, long route, HttpServletRequest request, int number, Long ship) {
         Date departureDate = ParseDateUtility.getDateFromForm(date);
         List<Long> staff = new ArrayList<>();

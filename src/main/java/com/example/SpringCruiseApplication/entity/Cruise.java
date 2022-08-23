@@ -48,14 +48,24 @@ public class Cruise {
 
     public int getFreePlacesByClass(RoomClass roomClass) {
         if (roomClass == RoomClass.ECONOM)
-            return ship.getEconomTotalPlaces()-economTickets;
+            return ship.getEconomTotalPlaces() - economTickets;
         if (roomClass == RoomClass.MIDDLE)
-            return ship.getMiddleTotalPlaces()-middleTickets;
+            return ship.getMiddleTotalPlaces() - middleTickets;
         if (roomClass == RoomClass.PREMIUM)
-            return ship.getPremiumTotalPlaces()-premiumTickets;
-        else return ship.getEconomTotalPlaces()-economTickets;
+            return ship.getPremiumTotalPlaces() - premiumTickets;
+        else return ship.getEconomTotalPlaces() - economTickets;
     }
 
+    public void addOneTicket(RoomClass roomClass) {
+        if (roomClass == RoomClass.ECONOM) {
+            economTickets++;
+        }
+        if (roomClass == RoomClass.MIDDLE) {
+            middleTickets++;
+        } else {
+            premiumTickets++;
+        }
+    }
 
 
 }

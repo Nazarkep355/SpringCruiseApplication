@@ -13,7 +13,7 @@
         <constructor-arg value="587"/>
         <constructor-arg value="cruisemailer64@gmail.com"/>
         <constructor-arg value="bjerwwpvxvbzzlku"/>
-        <constructor-arg value="smtp"/>
+        <constructor-arg value="smtp"/> <!-- protocol -->
         <constructor-arg value="true"/>
         <constructor-arg value="true"/>
         <constructor-arg value="true"/>

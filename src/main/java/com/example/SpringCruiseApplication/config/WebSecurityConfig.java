@@ -1,5 +1,7 @@
 package com.example.SpringCruiseApplication.config;
 
+import com.example.SpringCruiseApplication.filter.UpdateUserFilter;
+import com.example.SpringCruiseApplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +12,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private UserService userService;
     @Autowired
     private DataSource dataSource;
 
@@ -38,13 +43,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         security
                 .authorizeRequests()
                 .antMatchers("/home", "/user/**",
-                        "tickets/**","/ships/all","/ports/all","cruises/all"
+                        "tickets/**","/ships/all","/ports/all","/requests/send","/tickets"
                 )
                 .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/ships/add", "/ports/add",
-                        "/staff/**","routes/**","/cruises/add")
+                        "/staff/**","routes/**","/admin/response",
+                        "/cruises/admin/add","/requests/admin/response","/requests/admin/*")
                 .hasRole("ADMIN")
-                .antMatchers("/register", "/rest/**")
+                .antMatchers("/register","/cruises/*")
                 .permitAll()
                 .and()
                 .formLogin()
@@ -59,7 +65,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .permitAll();
+                .permitAll()
+                .and()
+                .addFilterAfter(new UpdateUserFilter(userService), BasicAuthenticationFilter.class);
 
     }
     @Bean("authenticationManager")

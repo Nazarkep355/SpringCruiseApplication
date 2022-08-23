@@ -9,6 +9,7 @@
 </head>
 <body>
 <header th:insert="header.html :: header"></header>
+<small class="text-muted" th:text="#{error.noCruise}" th:if='${error!=null&&error.equals("error.noCruise")}'></small>
 <ul class="nav nav-pills flex-column mb-auto" style="
 margin-left: 25px;margin-top: 25px; ">
     <li><a th:text="#{label.changeMoney}" href="/controller?controller=changeMoneyPage"
@@ -47,7 +48,7 @@ margin-left: 25px;margin-top: 25px; ">
                 </svg>
             </a></li>
         <li class="nav-item" style="margin-top: 15px">
-            <a th:text="#{label.requests}" href="/controller?controller=requests&page=1" class="nav-link active" aria-current="page"
+            <a th:text="#{label.requests}" href="/requests/admin/all" class="nav-link active" aria-current="page"
                style="width: 250px;">
                 <svg
                         class="bi me-2" width="16" height="16">
