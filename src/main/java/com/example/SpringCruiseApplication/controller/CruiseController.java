@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/cruises")
@@ -21,17 +18,31 @@ public class CruiseController {
     @Autowired
     private CruiseService cruiseService;
 
+    public CruiseController() {
+    }
+
+    public CruiseController(CruiseService cruiseService) {
+        this.cruiseService = cruiseService;
+    }
+
     @GetMapping("/{id}")
-    public String findOne(@PathVariable("id") long id, Model model, HttpSession session){
+    public String findOne(@PathVariable("id") long id, Model model, HttpSession session) {
         Object error = session.getAttribute("error");
-        if(error!=null){
-            model.addAttribute("error",error);
-            session.setAttribute("error",null);
+        if (error != null) {
+            model.addAttribute("error", error);
+            session.setAttribute("error", null);
         }
-        Cruise cruise = cruiseService.findById(id);
-        model.addAttribute("cruise",cruise);
+        Cruise cruise = null;
+        try {
+            cruise = cruiseService.findById(id);
+        } catch (NoSuchElementException e) {
+            session.setAttribute("error","error.noCruise");
+            return "redirect:/cruises/all";
+        }
+        model.addAttribute("cruise", cruise);
         return "cruise.html";
     }
+
     @GetMapping("/all")
     public String cruisesPage(Model model, Optional<Integer> page,
                               Optional<Boolean> actual, Optional<String> city,
@@ -40,14 +51,14 @@ public class CruiseController {
                 actual.orElse(false), freeOnly.orElse(false));
         Integer count = cruiseService.findCount(page.orElse(1), city,
                 actual.orElse(false), freeOnly.orElse(false));
-        boolean max = !(count>(page.orElse(1)*5));
+        boolean max = !(count > (page.orElse(1) * 5));
 
 
-        model.addAttribute("max",max);
+        model.addAttribute("max", max);
         model.addAttribute("cruises", cruises);
         model.addAttribute("page", page.orElse(1));
-        model.addAttribute("freeOnly",freeOnly.orElse(false));
-        model.addAttribute("actual",actual.orElse(false));
+        model.addAttribute("freeOnly", freeOnly.orElse(false));
+        model.addAttribute("actual", actual.orElse(false));
         return "cruises.html";
     }
 
@@ -74,6 +85,10 @@ public class CruiseController {
         cruiseService.planCruise(route, ship, departureDate, staff);
         return "redirect:/cruises/all";
     }
-
+    @GetMapping("/admin/plan")
+    public String planAllCruiseEndings(){
+        cruiseService.planAllEndings();
+        return "redirect:/home";
+    }
 
 }

@@ -3,13 +3,16 @@ package com.example.SpringCruiseApplication.service;
 import com.example.SpringCruiseApplication.entity.*;
 import com.example.SpringCruiseApplication.mail.Sender;
 import com.example.SpringCruiseApplication.repository.*;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +32,20 @@ public class CruiseService {
     private ShipRepository shipRepository;
     @Autowired
     private Sender sender;
+
+    public void planAllEndings(){
+        System.out.println(cruiseRepository.timestamp());
+        List<Cruise> cruises = cruiseRepository.findUnfinished(Pageable.unpaged())
+                .stream().map(a -> cruiseRepository.findById(a).get())
+                .collect(Collectors.toList());
+        for (Cruise cruise : cruises) {
+            System.out.println(cruise.getId());
+            setFinishTimer(cruise, cruise.getDates().get(cruise.getDates().size() - 1));
+        }
+    }
+    public Page<Cruise> findAllPageable(Pageable pageable) {
+        return cruiseRepository.findPage(pageable);
+    }
 
     public List<Cruise> findAllPageable(int page) {
         return cruiseRepository.findAll(PageRequest.of(page - 1, 5));
@@ -73,33 +90,13 @@ public class CruiseService {
             @Override
             public void run() {
                 endCruise(cruise);
-//                System.out.println("ENDED "+Date.from(Instant.now()));
+                System.out.println("ENDED " + Date.from(Instant.now()));
             }
         };
         timer.schedule(task, date);
     }
 
-    //    public void add() {
-//        Cruise cruise = new Cruise();
-//        List<Staff> staff = new ArrayList<>();
-//        staff.add(staffRepository.findById(1l).get());
-//        staff.add(staffRepository.findById(31l).get());
-//        cruise.setStaff(staff);
-//        Route route = routeRepository.findById(42l).get();
-//        Ship ship = shipRepository.findById(1l).get();
-//        cruise.setRoute(route);
-//        List<Date> dates = new ArrayList<>();
-//        Date date = Date.from(Instant.now());
-//        dates.add(date);
-//        for(int i =0;i<route.getDelays().size();i++){
-//            date = new Date(date.getTime());
-//            date.setDate(date.getDate()+1+route.getDelays().get(i));
-//            dates.add(date);
-//        }
-//        cruise.setDates(dates);
-//        cruise.setShip(ship);
-//        cruiseRepository.save(cruise);
-//    }
+
     public List<Staff> findEnabledStaff() {
         return staffRepository.findAllByEnable(true, PageRequest.of(0, 50));
     }
@@ -124,13 +121,18 @@ public class CruiseService {
         cruiseRepository.save(cruise);
     }
 
+    public List<Cruise> findByCityPageable(String city, Pageable pageable) {
+        Port port = portRepository.findPortByCity(city).orElseThrow();
+        List<Long> ids = cruiseRepository.findByCity(port.getCity(),
+                pageable);
+        return ids.stream().map(a -> cruiseRepository.findById(a).get())
+                .collect(Collectors.toList());
+    }
+
     public List<Cruise> findBy(int page, Optional<String> city, Boolean actual, Boolean freeOnly) {
+        Pageable pageable = PageRequest.of(page - 1, 5);
         if (city.isPresent() && !StringUtils.isEmpty(city.get())) {
-            Port port = portRepository.findPortByCity(city.get()).orElseThrow();
-            List<Long> ids = cruiseRepository.findByCity(port.getCity(),
-                    PageRequest.of(page - 1, 5));
-            return ids.stream().map(a -> cruiseRepository.findById(a).get())
-                    .collect(Collectors.toList());
+            return findByCityPageable(city.get(), pageable);
         } else if (freeOnly) {
             List<Long> ids = cruiseRepository.findFree(PageRequest.of(page - 1, 5));
             return ids.stream().map(id -> cruiseRepository.findById(id).get())
@@ -141,10 +143,6 @@ public class CruiseService {
                     .collect(Collectors.toList());
         }
         return cruiseRepository.findAll(PageRequest.of(page - 1, 5));
-    }
-
-    public void delete(Long id) {
-        cruiseRepository.deleteById(id);
     }
 
     public Integer findCount(int page, Optional<String> city, Boolean actual, Boolean freeOnly) {

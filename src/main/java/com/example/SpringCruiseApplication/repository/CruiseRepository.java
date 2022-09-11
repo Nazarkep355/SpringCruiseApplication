@@ -2,6 +2,7 @@ package com.example.SpringCruiseApplication.repository;
 
 import com.example.SpringCruiseApplication.entity.Cruise;
 import com.example.SpringCruiseApplication.entity.Port;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -33,19 +34,30 @@ public interface CruiseRepository extends CrudRepository<Cruise, Long> {
             " d.dates_order = 0 and d.dates > current_timestamp ",nativeQuery = true)
     List<Long> findActual(Pageable pageable);
 
+    @Query(value = "select distinct c.id   from cruises c,cruise_dates d,cruise_dates cd" +
+            "             group by c.id, d.cruise_id, d.dates_order" +
+            "             having c.id = d.cruise_id" +
+            "             and d.dates_order = (max(d.dates_order)) and d.dates > current_timestamp",nativeQuery = true)
+    List<Long> findUnfinished(Pageable pageable);
+    @Query(value = "select current_timestamp ",nativeQuery = true)
+    String timestamp();
+
     @Query(value = "select count(c.id) from cruises c,cruise_dates d where c.id = d.cruise_id and " +
             " d.dates_order = 0 and d.dates > current_timestamp ",nativeQuery = true)
     Integer countActual();
 
     @Query(value = "select c.id from cruises c,cruise_dates d, ships s where c.id = d.cruise_id and " +
             " d.dates_order = 0 and d.dates > current_timestamp and c.ship = s.id " +
-            "and c.econom_tickets + c.middle_tickets + c.premium_tickets > s.total_seats",nativeQuery = true)
+            "and c.econom_tickets + c.middle_tickets + c.premium_tickets < s.total_seats",nativeQuery = true)
     List<Long> findFree(Pageable pageable);
 
     @Query(value = "select count(c.id) from cruises c,cruise_dates d, ships s where c.id = d.cruise_id and " +
             " d.dates_order = 0 and d.dates > current_timestamp and c.ship = s.id " +
             "and c.econom_tickets + c.middle_tickets + c.premium_tickets > s.total_seats",nativeQuery = true)
     Integer countFree();
+
+    @Query("select c from Cruise c")
+    Page<Cruise> findPage(Pageable pageable);
 
 
 //        @Query("select c from Cruise c where c.dates > current_date")

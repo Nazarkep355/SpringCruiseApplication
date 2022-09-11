@@ -27,4 +27,9 @@ public class UserService {
         user.setMoney(0);
         return userRepository.save(user);
     }
+    public void changeBalance(User user, int money){
+        User dbUser = userRepository.findUserByEmail(user.getEmail()).get();
+        dbUser.setMoney(user.getMoney()+money);
+        userRepository.save(dbUser);
+    }
 }

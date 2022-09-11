@@ -1,5 +1,6 @@
 package com.example.SpringCruiseApplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLUpdate;

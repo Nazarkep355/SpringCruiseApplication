@@ -11,21 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -109,7 +104,7 @@ public class CruiseRequestService {
     }
 
     @Transactional
-    public void responseRequest(CruiseRequest cruiseRequest, Boolean response) throws MessagingException {
+    public void respondRequest(CruiseRequest cruiseRequest, Boolean response) throws MessagingException {
         if (response) {
             RoomClass roomClass = cruiseRequest.getRoomClass();
             Cruise cruise = cruiseRequest.getCruise();

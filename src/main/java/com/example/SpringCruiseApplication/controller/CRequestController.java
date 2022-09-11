@@ -7,8 +7,6 @@ import com.example.SpringCruiseApplication.entity.RoomClass;
 import com.example.SpringCruiseApplication.entity.User;
 import com.example.SpringCruiseApplication.service.CruiseRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +27,13 @@ public class CRequestController {
 
     @Autowired
     private CruiseRequestService crService;
+
+    public CRequestController() {
+    }
+
+    public CRequestController(CruiseRequestService crService) {
+        this.crService = crService;
+    }
 
     @GetMapping("/send")
     public String sendPage(String rClass, Long id, HttpSession session, Model model) {
@@ -89,9 +94,9 @@ public class CRequestController {
                                Optional<Long> cruise, Model model, HttpSession session) {
         List<CruiseRequest> requests = null;
         Object error = session.getAttribute("error");
-        if(error!=null){
-            model.addAttribute("error",error);
-            session.setAttribute("error",null);
+        if (error != null) {
+            model.addAttribute("error", error);
+            session.setAttribute("error", null);
         }
         try {
             requests = crService.findBy(page.orElse(1)
@@ -112,13 +117,13 @@ public class CRequestController {
 
     @PostMapping("/admin/response")
     public String response(boolean response, Long id, HttpSession session) throws MessagingException {
-        CruiseRequest request = crService.findById(id);
-        RoomClass roomClass = request.getRoomClass();
-        if (request.getCruise().getFreePlacesByClass(roomClass) < 1) {
+        CruiseRequest cruiseRequest = crService.findById(id);
+        RoomClass roomClass = cruiseRequest.getRoomClass();
+        if (cruiseRequest.getCruise().getFreePlacesByClass(roomClass) < 1) {
             session.setAttribute("error", "error.noFreePlaces");
             return "redirect:/requests/admin/" + id;
         }
-        crService.responseRequest(request, response);
+        crService.respondRequest(cruiseRequest, response);
         return "redirect:/requests/admin/all";
     }
 

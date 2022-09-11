@@ -17,7 +17,14 @@ import java.util.Optional;
 @Controller
 public class LoginController {
     @Autowired
-    private UserService userService;
+    private  UserService userService;
+
+    public LoginController() {
+    }
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/login")
     public String loginPage(@SessionAttribute Optional<User> user) {
@@ -55,9 +62,6 @@ public class LoginController {
         session.setAttribute("user", null);
         return "redirect:/home";
     }
-//    @PostMapping("/loginFail")
-//    public String fail(){
-//
-//    }
+
 
 }
