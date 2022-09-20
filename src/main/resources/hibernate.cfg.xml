@@ -1,0 +1,27 @@
+<!--<?xml version='1.0' encoding='utf-8'?>-->
+<!--<!DOCTYPE hibernate-configuration PUBLIC-->
+<!--        "-//Hibernate/Hibernate Configuration DTD//EN"-->
+<!--        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">-->
+<!--<hibernate-configuration>-->
+<!--    <session-factory>-->
+<!--        <property name="connection.url">-->
+<!--            jdbc:postgresql://localhost:5432/cruisespring-->
+<!--        </property>-->
+<!--        <property name="connection.driver_class">-->
+<!--            org.postgresql.Driver-->
+<!--        </property>-->
+<!--        <property name="connection.username">-->
+<!--            postgres-->
+<!--        </property>-->
+<!--        <property name="connection.password">-->
+<!--            3228-->
+<!--        </property>-->
+<!--        <property name="dialect">-->
+<!--            org.hibernate.dialect.PostgreSQL10Dialect-->
+<!--        </property>-->
+
+<!--&lt;!&ndash;        <mapping resource="ship.hbm.xml"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;        DB schema will be updated if needed&ndash;&gt;-->
+<!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
+<!--    </session-factory>-->
+<!--</hibernate-configuration>-->

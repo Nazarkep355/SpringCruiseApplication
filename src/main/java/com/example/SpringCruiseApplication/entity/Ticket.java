@@ -20,8 +20,8 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "cruise")
     private Cruise cruise;
-    @Column
+    @Column(name = "room_class")
     private RoomClass roomClass;
-    @Column
+    @Column(name="purchase_date")
     private Date purchaseDate;
 }

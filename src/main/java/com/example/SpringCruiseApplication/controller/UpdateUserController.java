@@ -21,7 +21,7 @@ public class UpdateUserController {
 
     @PostMapping("/changeBalance")
     public String changeBalance(@SessionAttribute User user,int money){
-        userService.changeBalance(user, money);
+        userService.changeBalance(user, user.getMoney()+money);
         return "redirect:/home";
     }
 

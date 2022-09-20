@@ -1,36 +1,41 @@
 package com.example.SpringCruiseApplication.entity;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import java.io.Serializable;
+
 
 @Entity
 @Table(name = "ships")
 @Getter
 @Setter
 @ToString
-public class Ship {
+public class Ship implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private Integer id;
     @Column
     private String name;
     @Column
     private boolean enable;
     @Column
-    private int economCost;
+    private Integer economCost;
     @Column
-    private int economTotalPlaces;
+    private Integer economTotalPlaces;
     @Column
-    private int middleCost;
+    private Integer middleCost;
     @Column
-    private int middleTotalPlaces;
+    private Integer middleTotalPlaces;
     @Column
-    private int premiumCost;
+    private Integer premiumCost;
     @Column
-    private int premiumTotalPlaces;
+    private Integer premiumTotalPlaces;
     @Column
-    private int totalSeats;
+    private Integer totalSeats;
+    public Integer getId(){
+        return this.id;
+    }
 }

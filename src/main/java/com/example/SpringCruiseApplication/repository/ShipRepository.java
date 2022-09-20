@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ShipRepository extends CrudRepository<Ship,Long> {
+public interface ShipRepository extends CrudRepository<Ship,Integer> {
     Boolean existsShipByName(String name);
     List<Ship> findAll(Pageable pageable);
     @Query("select count(s) from Ship s where s.id >0")

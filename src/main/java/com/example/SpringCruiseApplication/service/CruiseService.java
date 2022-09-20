@@ -3,16 +3,31 @@ package com.example.SpringCruiseApplication.service;
 import com.example.SpringCruiseApplication.entity.*;
 import com.example.SpringCruiseApplication.mail.Sender;
 import com.example.SpringCruiseApplication.repository.*;
+import com.example.SpringCruiseApplication.util.UnProxer;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+//import jakarta.persistence.EntityManager;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +35,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class CruiseService {
+
     @Autowired
     private CruiseRepository cruiseRepository;
     @Autowired
@@ -33,7 +49,7 @@ public class CruiseService {
     @Autowired
     private Sender sender;
 
-    public void planAllEndings(){
+    public void planAllEndings() {
         System.out.println(cruiseRepository.timestamp());
         List<Cruise> cruises = cruiseRepository.findUnfinished(Pageable.unpaged())
                 .stream().map(a -> cruiseRepository.findById(a).get())
@@ -43,6 +59,7 @@ public class CruiseService {
             setFinishTimer(cruise, cruise.getDates().get(cruise.getDates().size() - 1));
         }
     }
+
     public Page<Cruise> findAllPageable(Pageable pageable) {
         return cruiseRepository.findPage(pageable);
     }
@@ -60,7 +77,7 @@ public class CruiseService {
     }
 
     @Transactional
-    public Cruise planCruise(Long route, Long ship, Date date, List<Long> staffList) {
+    public Cruise planCruise(Long route, Integer ship, Date date, List<Long> staffList) {
         Optional<Route> routeOptional = routeRepository.findById(route);
         Cruise cruise = new Cruise();
         cruise.setShip(shipRepository.findById(ship).get());
@@ -111,14 +128,42 @@ public class CruiseService {
 
     @Transactional
     public void endCruise(Cruise cruise) {
-        cruise.getShip().setEnable(true);
-        cruise.getStaff().forEach(
-                a -> {
-                    a.setEnable(true);
-                    staffRepository.save(a);
-                });
-        shipRepository.save(cruise.getShip());
-        cruiseRepository.save(cruise);
+//        Configuration configuration = new Configuration();
+//        configuration.configure();
+//        configuration.addAnnotatedClass(Ship.class);
+//        configuration.addPackage("com.example.SpringCruiseApplication.entity");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("myUnit");
+        EntityManager manager = emf.createEntityManager();
+        try {
+            manager.getTransaction().begin();
+            Object ship =manager.find(Ship.class, cruise.getShip().getId());
+            UnProxer.setEnable(ship,true);
+            manager.persist(ship);
+            cruise.getStaff().forEach(
+                    a -> {
+                        try {
+                           Object staff =manager.find(Staff.class, a.getId());
+                            UnProxer.setEnable(staff,true);
+                            manager.persist(staff);
+                        } catch (NoSuchMethodException e) {
+                            throw new RuntimeException(e);
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    });
+        manager.getTransaction().commit();
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } finally {
+            manager.close();
+        }
     }
 
     public List<Cruise> findByCityPageable(String city, Pageable pageable) {

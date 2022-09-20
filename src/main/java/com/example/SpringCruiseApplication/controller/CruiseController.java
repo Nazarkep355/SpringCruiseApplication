@@ -76,7 +76,7 @@ public class CruiseController {
     }
 
     @PostMapping("/admin/add")
-    public String addCruise(String date, long route, HttpServletRequest request, int number, Long ship) {
+    public String addCruise(String date, long route, HttpServletRequest request, int number, int ship) {
         Date departureDate = ParseDateUtility.getDateFromForm(date);
         List<Long> staff = new ArrayList<>();
         for (int i = 1; i <= number; i++) {

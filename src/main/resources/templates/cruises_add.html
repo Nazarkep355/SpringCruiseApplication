@@ -48,8 +48,9 @@
                 const options = document.getElementById('options');
                 const numberInput = document.getElementById('numberInput');
                 let numberOfStaff = numberInput.value;
-                if (numberOfStaff < 1)
+                if (numberOfStaff < 1){
                     numberOfStaff = 1;
+                numberInput.value =1;}
                 for (let i = 1; i <= numberOfStaff; i++) {
                     const divStaff = document.createElement('div')
                     divStaff.setAttribute('class', 'form-floating mb-3');

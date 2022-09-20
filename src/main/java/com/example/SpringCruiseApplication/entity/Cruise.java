@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLUpdate;
 import org.springframework.scheduling.annotation.Scheduled;
 
+//import jakarta.persistence.*;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -25,16 +26,16 @@ public class Cruise {
     @ManyToOne
     @JoinColumn(name = "route")
     private Route route;
-    @ManyToOne
-    @JoinColumn(name = "ship")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ship",columnDefinition = "bigint")
     private Ship ship;
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     private List<Staff> staff;
-    @Column
+    @Column(name = "econom_tickets")
     private int economTickets;
-    @Column
+    @Column(name = "middle_tickets")
     private int middleTickets;
-    @Column
+    @Column(name = "premium_tickets")
     private int premiumTickets;
 
     public int getCostByClass(RoomClass roomClass) {

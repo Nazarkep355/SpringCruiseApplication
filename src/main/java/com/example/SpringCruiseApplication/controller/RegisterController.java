@@ -40,6 +40,7 @@ public class RegisterController {
     }
     @PostMapping("/register")
     public String register(User user, HttpSession session) {
+       String password  = user.getPassword();
         try {
             user = userService.registerUser(user);
         }catch (ConstraintViolationException e){
@@ -51,7 +52,8 @@ public class RegisterController {
         }
         session.setAttribute("user",user);
         UsernamePasswordAuthenticationToken authReq
-                = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+                = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
+        System.out.println("Password: " + password);
         Authentication auth = authManager.authenticate(authReq);
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
